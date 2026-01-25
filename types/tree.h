@@ -21,7 +21,7 @@ typedef struct {
     node_type type;
     node_value val;
     size_t child_count;
-    struct tree_node *children;
+    struct tree_node **children;
 } tree_node;
 
 
