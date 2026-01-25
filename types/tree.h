@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-struct tree_node;
-
 typedef enum {
     LIST,
     DICT,
@@ -17,7 +15,7 @@ typedef union {
     char *comp_str;
 } node_value;
 
-typedef struct {
+typedef struct tree_node {
     node_type type;
     node_value val;
     size_t child_count;
