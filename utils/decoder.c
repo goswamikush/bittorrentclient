@@ -34,16 +34,24 @@ int decode_tree() {
 *    str - bencoded string component
 *
 * Returns:
-*    tree_node
+*    pointer to tree_node
 */
-tree_node parse_string(char component[]) { 
-    int str_len = atoi(component[0]);
-    char str_value[str_len];
+tree_node *parse_string(const char *component) { 
+    int str_len = atoi(component);
+
+    char *str_value = malloc(str_len + 1);
+    tree_node *node = malloc(sizeof(tree_node));
 
     memcpy(str_value, component + 2, str_len);
+    str_value[str_len] = '\0';
 
-    tree_node new_node = {.type STR, .}
-}
+    node->type = STR;
+    node->val.comp_str = str_value;
+    node->child_count = 0;
+    node->children = NULL;
+    
+    return node;
+};
 
 
 
