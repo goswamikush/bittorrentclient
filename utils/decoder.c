@@ -29,9 +29,32 @@ int decode(char file_path[]) {
 int decode_tree(const char *text, tree_node *root, int pointer) {
     while (pointer < strlen(text)) {
         // Parse string components
-        if (atoi(text) != 0) {
-            tree_node *new_node = parse_string(text);
+        if (atoi(text + pointer) != 0) {
+            tree_node *new_node = parse_string(text + pointer);
             add_child(root, new_node);
+
+            return atoi(text + pointer) + 2;
+        }
+
+        // Handle lists
+        if (text[0] == 'l') {
+            tree_node *new_node = malloc(sizeof(tree_node));
+
+            new_node->type = LIST;
+            new_node->val.comp_str = NULL;
+            new_node->children = NULL;
+            new_node->child_count = 0;
+
+            add_child(root, new_node);
+            pointer += decode_tree(text, new_node, pointer + 1) + 1;
+
+            if (text[pointer] == 'e') {
+                return pointer;
+            }
+
+            if (text[pointer] == 'l') {
+                pointer += decode_tree(text, new_node, pointer);
+            }
         }
     }
     return 0;
