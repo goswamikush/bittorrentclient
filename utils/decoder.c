@@ -3,6 +3,9 @@
 #include <string.h>
 #include "../types/tree.h"
 
+tree_node *parse_string(const char *component);
+int add_child(tree_node *parent, tree_node *child);
+
 int decode(char file_path[]) {
     FILE *fptr;
     char buffer[255];
@@ -23,8 +26,14 @@ int decode(char file_path[]) {
     return EXIT_SUCCESS;
 }
 
-int decode_tree() {
-    // Base case
+int decode_tree(const char *text, tree_node *root, int pointer) {
+    while (pointer < strlen(text)) {
+        // Parse string components
+        if (atoi(text) != 0) {
+            tree_node *new_node = parse_string(text);
+            add_child(root, new_node);
+        }
+    }
     return 0;
 }
 
@@ -54,5 +63,26 @@ tree_node *parse_string(const char *component) {
     return node;
 };
 
+/*
+* Adds child to the children member of tree_node struct
+* 
+* Parameters:
+*   parent - pointer to tree_node
+*   child - pointer to tree_node
+*
+* Returns:
+*   int of whether the operation was successful or not
+*/
+int add_child(tree_node *parent, tree_node *child) {
+    tree_node **new_children = realloc(parent->children, sizeof(tree_node *) * (parent->child_count + 1));
 
+    if (!new_children) {
+        return 0;
+    }
 
+    parent->children = new_children;
+    parent->children[parent->child_count] = child;
+    parent->child_count++;
+
+    return 1;
+}

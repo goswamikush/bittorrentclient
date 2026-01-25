@@ -34,7 +34,42 @@ void test_parse_string() {
     }
 }
 
+// Test add_child method
+void test_add_child() {
+    tree_node *parent = malloc(sizeof(tree_node));;
+
+    parent->type = STR;
+    parent->val.comp_str = "hello";
+    parent->children = NULL;
+    parent->child_count = 0;
+
+    tree_node *child = malloc(sizeof(tree_node));
+
+    child->type = STR;
+    child->val.comp_str = "hello2";
+    child->children = NULL;
+    child->child_count = 0;
+
+    int res = add_child(parent, child);
+
+    if (res == 0) {
+        printf("Failed to add new children\n");
+        return;
+    } 
+
+    if (parent->child_count == 1) {
+        printf("Successfully added to child_count\n");
+    }
+
+    if (parent->children[0] == child) {
+        printf("Successfully stored child node as child in parent node\n");
+    }
+
+    return;
+}
+
 int main() {
     test_parse_string();
+    test_add_child();
     return 0;
 }
