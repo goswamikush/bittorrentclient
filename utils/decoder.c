@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "../types/tree.h"
 
-tree_node *parse_string(const char *component);
-tree_node *parse_int(const char *component);
+tree_node *parse_string_bytes(const unsigned char *component);
+tree_node *parse_int_bytes(const unsigned char *component);
+
 int add_child(tree_node *parent, tree_node *child);
 
 int decode(char file_path[]) {
@@ -55,42 +57,42 @@ int decode(char file_path[]) {
 * Returns
 *   int - number of chars consumed
 */
-int decode_tree(const char *text, tree_node *root, int pointer) {
-    if (pointer >= strlen(text)) {
+int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, int num_bytes) {
+    if (pointer >= num_bytes) {
         return 0;
     }
 
-    if (atoi(text + pointer) != 0) {
-        tree_node *curr_node = parse_string(text + pointer);
+    if (atoi((char*)(bytes + pointer)) != 0) {
+        tree_node *curr_node = parse_string_bytes(bytes + pointer);
         add_child(root, curr_node);
 
         int colon_pos = 0;
 
-        while (text[pointer + colon_pos] != ':') {
+        while (bytes[pointer + colon_pos] != 0x3A) {
             colon_pos++;
         }
 
-        return atoi(text + pointer) + colon_pos + 1;
+        return atoi((char*)(bytes + pointer)) + colon_pos + 1;
     }
 
-    if (text[pointer] == 'i') {
-        tree_node *curr_node = parse_int(text + pointer);
+    if (bytes[pointer] == 0x69) {
+        tree_node *curr_node = parse_int_bytes(bytes + pointer);
         add_child(root, curr_node);
 
         int chars_consumed = 0;
 
-        while (text[pointer + chars_consumed] != 'e') {
+        while (bytes[pointer + chars_consumed] != 0x65) {
             chars_consumed++;
         }
 
         return chars_consumed + 1;
     }
 
-    if (text[pointer] == 'e') {
+    if (bytes[pointer] == 0x65) {
         return 1;
     }
 
-    if (text[pointer] == 'l') {
+    if (bytes[pointer] == 0x6C) {
         int chars_consumed = 0;
 
         tree_node *curr_node = malloc(sizeof(tree_node));
@@ -103,8 +105,8 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
         add_child(root, curr_node);
         
         pointer++;
-        while (text[pointer] != 'e' && pointer < strlen(text)) {
-            int step = decode_tree(text, curr_node, pointer);
+        while (bytes[pointer] != 0x65 && bytes[pointer]) {
+            int step = decode_tree_bytes(bytes, curr_node, pointer, num_bytes);
             pointer += step;
             chars_consumed += step;
         }
@@ -112,7 +114,7 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
         return chars_consumed + 2;
     }
 
-    if (text[pointer] == 'd') {
+    if (bytes[pointer] == 0x64) {
         int chars_consumed = 0;
 
         tree_node *curr_node = malloc(sizeof(tree_node));
@@ -125,8 +127,8 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
         add_child(root, curr_node);
 
         pointer++;
-        while (text[pointer] != 'e' && pointer < strlen(text)) {
-            int step = decode_tree(text, curr_node, pointer);
+        while (bytes[pointer] != 0x65 && bytes[pointer] != 0x00) {
+            int step = decode_tree_bytes(bytes, curr_node, pointer, num_bytes);
             pointer += step;
             chars_consumed += step;
         }
@@ -146,20 +148,23 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
 * Returns:
 *    pointer to tree_node
 */
-tree_node *parse_string(const char *component) { 
+tree_node *parse_string_bytes(const unsigned char *bytes) { 
+    // Find string length
     int colon_pos = 0;
 
-    while (component[colon_pos] != ':') {
-        colon_pos ++;
+    while (bytes[colon_pos] != 0x3a) {
+        colon_pos++;
     }
 
-    int str_len = atoi(component);
+    int str_len = atoi((char*)(bytes));
 
+    // Get string value
     char *str_value = malloc(str_len + 1);
-    tree_node *node = malloc(sizeof(tree_node));
-
-    memcpy(str_value, component + colon_pos + 1, str_len);
+    memcpy(str_value, bytes + colon_pos + 1, str_len);
     str_value[str_len] = '\0';
+
+    // Create new node
+    tree_node *node = malloc(sizeof(tree_node));
 
     node->type = STR;
     node->val.comp_str = str_value;
@@ -178,22 +183,15 @@ tree_node *parse_string(const char *component) {
 * Returns:
 *    pointer to tree_node
 */
-tree_node *parse_int(const char *component) { 
-    int str_len = 0;
-
-    int i = 1;
-    while (component[i] != 'e') {
-        str_len += 1; 
-        i++;
-    }
-
-    char *int_value = malloc(str_len + 1);
+tree_node *parse_int_bytes(const unsigned char *bytes) { 
+    // Obtain number
+    int number = atoi((char*)(bytes + 1));
+    
+    // Create new node
     tree_node *node = malloc(sizeof(tree_node));
 
-    memcpy(int_value, component + 1, str_len);
-
     node->type = INT;
-    node->val.comp_int = atoi(int_value);
+    node->val.comp_int = number;
     node->child_count = 0;
     node->children = NULL;
     

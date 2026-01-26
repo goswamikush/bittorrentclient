@@ -4,9 +4,12 @@
 #include "../types/tree.h"
 
 void decode(char file_path[]);
-tree_node *parse_string(const char *component);
-tree_node *parse_int(const char *component);
+
+tree_node *parse_string_bytes(const unsigned char *bytes);
+tree_node *parse_int_bytes(const unsigned char *bytes);
+
 int add_child(tree_node *parent, tree_node *child);
-int decode_tree(const char *text, tree_node *root, int pointer);
+
+int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, int num_bytes);
 
 #endif

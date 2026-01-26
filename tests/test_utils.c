@@ -5,9 +5,9 @@
 
 // Test parse string method
 void test_parse_string() {
-    char test_string[7] = "4:spam";
+    unsigned char bytes[] = {0x34, 0x3a, 0x73, 0x70, 0x61, 0x6d};
 
-    tree_node *node = parse_string(test_string);
+    tree_node *node = parse_string_bytes(bytes);
 
     // Ground truth
     tree_node *ground_truth = malloc(sizeof(tree_node));
@@ -30,14 +30,13 @@ void test_parse_string() {
 
 // Test parse int method
 void test_parse_int() {
-    char test_string[8] = "i345e123";
-
-    tree_node *node = parse_int(test_string); 
+    unsigned char bytes[] = {0x69, 0x34, 0x32, 0x65};
+    tree_node *node = parse_int_bytes(bytes); 
 
     tree_node *ground_truth = malloc(sizeof(tree_node));
 
     ground_truth->type = INT;
-    ground_truth->val.comp_int = 345;
+    ground_truth->val.comp_int = 42;
     ground_truth->child_count = 0;
     ground_truth->children = NULL;
 

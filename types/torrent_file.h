@@ -8,6 +8,6 @@ typedef struct {
     char *pieces;
     char *file_name;
     int total_size;
-} torrent_file
+} torrent_file;
 
 #endif
