@@ -9,63 +9,47 @@ void test_parse_string() {
 
     tree_node *node = parse_string(test_string);
 
-    if (node->type == STR) {
-        printf("Correct type\n");
-    } else {
-        printf("Incorret type\n");
-    }
+    // Ground truth
+    tree_node *ground_truth = malloc(sizeof(tree_node));
 
-    if (strcmp(node->val.comp_str, "spam") == 0) {
-        printf("Correct value\n");
-    } else {
-        printf("Incorrect value\n");
-    }
+    ground_truth->type = STR;
+    ground_truth->val.comp_str = "spam";
+    ground_truth->child_count = 0;
+    ground_truth->children = NULL;
 
-    if (node->child_count == 0) {
-        printf("Correct child count\n");
-    } else {
-        printf("Incorrect child count\n");
-    }
+    printf("=== Start Parse String Test ===\n");
 
-    if (node->children == NULL) {
-        printf("Correct children value\n");
+    bool is_equal = tree_equals(ground_truth, node);
+
+    if (is_equal) {
+        printf("=== Parse String Success! ===\n\n");
     } else {
-        printf("Incorrect children value\n");
+        printf("=== Parse String Failure! ===\n\n");
     }
 }
 
 // Test parse int method
 void test_parse_int() {
-    printf("\n=== Start Test Parse Int ===");
     char test_string[8] = "i345e123";
 
     tree_node *node = parse_int(test_string); 
 
-    if (node->type == INT) {
-        printf("Correct type\n");
-    } else {
-        printf("Incorret type\n");
-    }
+    tree_node *ground_truth = malloc(sizeof(tree_node));
 
-    if (node->val.comp_int == 345) {
-        printf("Correct value\n");
-    } else {
-        printf("Incorrect value\n");
-    }
+    ground_truth->type = INT;
+    ground_truth->val.comp_int = 345;
+    ground_truth->child_count = 0;
+    ground_truth->children = NULL;
 
-    if (node->child_count == 0) {
-        printf("Correct child count\n");
-    } else {
-        printf("Incorrect child count\n");
-    }
+    printf("=== Start Parse Int Test ===\n");
 
-    if (node->children == NULL) {
-        printf("Correct children value\n");
-    } else {
-        printf("Incorrect children value\n");
-    }
+    bool is_equal = tree_equals(ground_truth, node);
 
-    printf("=== End Test Parse Int ===");
+    if (is_equal) {
+        printf("=== Parse Int Success! ===\n\n");
+    } else {
+        printf("=== Parse Int Failure! ===\n\n");
+    }
 }
 
 // Test add_child method
@@ -84,20 +68,30 @@ void test_add_child() {
     child->children = NULL;
     child->child_count = 0;
 
+    printf("=== Start Add Child ===\n");
+
     int res = add_child(parent, child);
 
     if (res == 0) {
-        printf("Failed to add new children\n");
+        printf("=== Failed to add new children ===\n\n");
         return;
     } 
 
     if (parent->child_count == 1) {
         printf("Successfully added to child_count\n");
+    } else {
+        printf("=== Failed to add new children ===\n\n");
+        return; 
     }
 
     if (parent->children[0] == child) {
         printf("Successfully stored child node as child in parent node\n");
+    } else {
+        printf("=== Failed to add new children ===\n\n");
+        return;
     }
+
+    printf("=== Add to child Success! ===\n\n");
 
     return;
 }
