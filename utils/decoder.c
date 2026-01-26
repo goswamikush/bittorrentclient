@@ -9,19 +9,36 @@ int add_child(tree_node *parent, tree_node *child);
 
 int decode(char file_path[]) {
     FILE *fptr;
-    char buffer[255];
+    unsigned char *buffer;
+    long file_size;
 
-    fptr = fopen("test.txt", "r");
+    fptr = fopen("big-buck-bunny.torrent", "rb");
 
     if (fptr == NULL) {
         perror("Error opening file");
         return EXIT_FAILURE;
     }
 
-    while (fgets(buffer, sizeof(buffer), fptr) != NULL) {
-        printf("%s", buffer);
+    fseek(fptr, 0, SEEK_END);
+    file_size = ftell(fptr);
+    rewind(fptr);
+
+    buffer = (unsigned char *)malloc(file_size);
+    if (buffer == NULL) {
+        perror("Memory allocation failed");
+        fclose(fptr);
+        return 1;
     }
 
+    size_t bytes_read = fread(buffer, 1, file_size, fptr);
+    if (bytes_read != file_size) {
+        perror("Error reading file");
+        free(buffer);
+        fclose(fptr);
+        return 1;
+    }
+
+    free(buffer);
     fclose(fptr);
 
     return EXIT_SUCCESS;
