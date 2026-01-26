@@ -5,7 +5,7 @@
 void print_tree(const tree_node *node);
 
 void test_decoder() {
-    int NUM_TEST_CASES = 6;
+    int NUM_TEST_CASES = 7;
 
     char *test_cases[NUM_TEST_CASES];
 
@@ -15,6 +15,7 @@ void test_decoder() {
     test_cases[3] = "l1:al1:bl1:ceee";
     test_cases[4] = "l1:ae";
     test_cases[5] = "l1:al1:bel1:cee";
+    test_cases[6] = "l10:aqwertgswql1:aee";
 
     int i;
     for (i = 0; i < NUM_TEST_CASES; i++) {

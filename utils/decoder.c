@@ -47,7 +47,13 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
         tree_node *curr_node = parse_string(text + pointer);
         add_child(root, curr_node);
 
-        return atoi(text + pointer) + 2;
+        int colon_pos = 0;
+
+        while (text[pointer + colon_pos] != ':') {
+            colon_pos++;
+        }
+
+        return atoi(text + pointer) + colon_pos + 1;
     }
 
     if (text[pointer] == 'e') {
@@ -88,12 +94,18 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
 *    pointer to tree_node
 */
 tree_node *parse_string(const char *component) { 
+    int colon_pos = 0;
+
+    while (component[colon_pos] != ':') {
+        colon_pos ++;
+    }
+
     int str_len = atoi(component);
 
     char *str_value = malloc(str_len + 1);
     tree_node *node = malloc(sizeof(tree_node));
 
-    memcpy(str_value, component + 2, str_len);
+    memcpy(str_value, component + colon_pos + 1, str_len);
     str_value[str_len] = '\0';
 
     node->type = STR;
