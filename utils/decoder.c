@@ -62,6 +62,9 @@ int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, 
         return 0;
     }
 
+    unsigned char first_char = bytes[pointer];
+
+    // String
     if (atoi((char*)(bytes + pointer)) != 0) {
         tree_node *curr_node = parse_string_bytes(bytes + pointer);
         add_child(root, curr_node);
@@ -75,7 +78,8 @@ int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, 
         return atoi((char*)(bytes + pointer)) + colon_pos + 1;
     }
 
-    if (bytes[pointer] == 0x69) {
+    // Int
+    if (first_char == 0x69) {
         tree_node *curr_node = parse_int_bytes(bytes + pointer);
         add_child(root, curr_node);
 
@@ -88,38 +92,23 @@ int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, 
         return chars_consumed + 1;
     }
 
+    // If encoutner 'e'
     if (bytes[pointer] == 0x65) {
         return 1;
     }
 
-    if (bytes[pointer] == 0x6C) {
+    // Dict or List
+    if (first_char == 0x64 || first_char == 0x6C) {
         int chars_consumed = 0;
 
         tree_node *curr_node = malloc(sizeof(tree_node));
 
-        curr_node->type = LIST;
-        curr_node->val.comp_str = NULL;
-        curr_node->children = NULL;
-        curr_node->child_count = 0;
-
-        add_child(root, curr_node);
-        
-        pointer++;
-        while (bytes[pointer] != 0x65 && bytes[pointer]) {
-            int step = decode_tree_bytes(bytes, curr_node, pointer, num_bytes);
-            pointer += step;
-            chars_consumed += step;
+        if (first_char == 0x64) {
+            curr_node->type = DICT;
+        } else {
+            curr_node->type = LIST;
         }
 
-        return chars_consumed + 2;
-    }
-
-    if (bytes[pointer] == 0x64) {
-        int chars_consumed = 0;
-
-        tree_node *curr_node = malloc(sizeof(tree_node));
-
-        curr_node->type = DICT;
         curr_node->val.comp_str = NULL;
         curr_node->children = NULL;
         curr_node->child_count = 0;
