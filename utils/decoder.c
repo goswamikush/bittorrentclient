@@ -26,37 +26,46 @@ int decode(char file_path[]) {
     return EXIT_SUCCESS;
 }
 
+/*
+* Decode tree implementation with passing in smaller version of previous string
+*/
 int decode_tree(const char *text, tree_node *root, int pointer) {
-    while (pointer < strlen(text)) {
-        // Parse string components
-        if (atoi(text + pointer) != 0) {
-            tree_node *new_node = parse_string(text + pointer);
-            add_child(root, new_node);
-
-            return atoi(text + pointer) + 2;
-        }
-
-        // Handle lists
-        if (text[0] == 'l') {
-            tree_node *new_node = malloc(sizeof(tree_node));
-
-            new_node->type = LIST;
-            new_node->val.comp_str = NULL;
-            new_node->children = NULL;
-            new_node->child_count = 0;
-
-            add_child(root, new_node);
-            pointer += decode_tree(text, new_node, pointer + 1) + 1;
-
-            if (text[pointer] == 'e') {
-                return pointer;
-            }
-
-            if (text[pointer] == 'l') {
-                pointer += decode_tree(text, new_node, pointer);
-            }
-        }
+    if (pointer >= strlen(text)) {
+        return 0;
     }
+
+    if (atoi(text + pointer) != 0) {
+        tree_node *curr_node = parse_string(text + pointer);
+        add_child(root, curr_node);
+
+        return atoi(text + pointer) + 2;
+    }
+
+    if (text[pointer] == 'e') {
+        return 1;
+    }
+
+    if (text[pointer] == 'l') {
+        int chars_consumed = 0;
+
+        tree_node *curr_node = malloc(sizeof(tree_node));
+
+        curr_node->type = LIST;
+        curr_node->val.comp_str = NULL;
+        curr_node->children = NULL;
+        curr_node->child_count = 0;
+
+        add_child(root, curr_node);
+        
+        while (text[pointer] != 'e') {
+            int step = decode_tree(text, curr_node, pointer + 1);
+            pointer += step;
+            chars_consumed += step;
+        }
+
+        return chars_consumed + 2;
+    }
+
     return 0;
 }
 
