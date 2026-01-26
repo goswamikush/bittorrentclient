@@ -4,6 +4,16 @@
 #include "tree.h"
 
 
+/*
+* See if two trees are equal
+* 
+* Parameters
+*   ground_truth - root node of tree
+*   test_node - root node of tree
+*
+* Returns
+*   bool - if two trees have equal values
+*/
 bool tree_equals(tree_node *ground_truth, tree_node *test_node) {
     // Compare types
     if (ground_truth->type != test_node->type) {
