@@ -72,8 +72,31 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
 
         add_child(root, curr_node);
         
-        while (text[pointer] != 'e') {
-            int step = decode_tree(text, curr_node, pointer + 1);
+        pointer++;
+        while (text[pointer] != 'e' && pointer < strlen(text)) {
+            int step = decode_tree(text, curr_node, pointer);
+            pointer += step;
+            chars_consumed += step;
+        }
+
+        return chars_consumed + 2;
+    }
+
+    if (text[pointer] == 'd') {
+        int chars_consumed = 0;
+
+        tree_node *curr_node = malloc(sizeof(tree_node));
+
+        curr_node->type = DICT;
+        curr_node->val.comp_str = NULL;
+        curr_node->children = NULL;
+        curr_node->child_count = 0;
+
+        add_child(root, curr_node);
+
+        pointer++;
+        while (text[pointer] != 'e' && pointer < strlen(text)) {
+            int step = decode_tree(text, curr_node, pointer);
             pointer += step;
             chars_consumed += step;
         }
