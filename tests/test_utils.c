@@ -37,7 +37,7 @@ void test_parse_string() {
 // Test parse int method
 void test_parse_int() {
     printf("\n=== Start Test Parse Int ===");
-    char test_string[5] = "i345e";
+    char test_string[8] = "i345e123";
 
     tree_node *node = parse_int(test_string); 
 

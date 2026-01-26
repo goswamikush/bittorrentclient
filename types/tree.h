@@ -2,6 +2,7 @@
 #define TREE_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef enum {
     LIST,
@@ -22,5 +23,6 @@ typedef struct tree_node {
     struct tree_node **children;
 } tree_node;
 
+bool tree_equals(tree_node *ground_truth, tree_node *test_node);
 
 #endif
