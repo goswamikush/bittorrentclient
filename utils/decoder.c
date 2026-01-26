@@ -4,6 +4,7 @@
 #include "../types/tree.h"
 
 tree_node *parse_string(const char *component);
+tree_node *parse_int(const char *component);
 int add_child(tree_node *parent, tree_node *child);
 
 int decode(char file_path[]) {
@@ -97,6 +98,37 @@ tree_node *parse_string(const char *component) {
 
     node->type = STR;
     node->val.comp_str = str_value;
+    node->child_count = 0;
+    node->children = NULL;
+    
+    return node;
+};
+
+/*
+* Parses bencoded numbers i.e. 'i3e'
+*
+* Parameters:
+*    str - bencoded string component
+*
+* Returns:
+*    pointer to tree_node
+*/
+tree_node *parse_int(const char *component) { 
+    int str_len = 0;
+
+    int i = 1;
+    while (component[i] != 'e') {
+        str_len += 1; 
+        i++;
+    }
+
+    char *int_value = malloc(str_len + 1);
+    tree_node *node = malloc(sizeof(tree_node));
+
+    memcpy(int_value, component + 1, str_len);
+
+    node->type = INT;
+    node->val.comp_int = atoi(int_value);
     node->child_count = 0;
     node->children = NULL;
     

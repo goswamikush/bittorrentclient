@@ -5,6 +5,7 @@
 
 void decode(char file_path[]);
 tree_node *parse_string(const char *component);
+tree_node *parse_int(const char *component);
 int add_child(tree_node *parent, tree_node *child);
 int decode_tree(const char *text, tree_node *root, int pointer);
 

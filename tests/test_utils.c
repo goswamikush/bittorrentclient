@@ -34,6 +34,40 @@ void test_parse_string() {
     }
 }
 
+// Test parse int method
+void test_parse_int() {
+    printf("\n=== Start Test Parse Int ===");
+    char test_string[5] = "i345e";
+
+    tree_node *node = parse_int(test_string); 
+
+    if (node->type == INT) {
+        printf("Correct type\n");
+    } else {
+        printf("Incorret type\n");
+    }
+
+    if (node->val.comp_int == 345) {
+        printf("Correct value\n");
+    } else {
+        printf("Incorrect value\n");
+    }
+
+    if (node->child_count == 0) {
+        printf("Correct child count\n");
+    } else {
+        printf("Incorrect child count\n");
+    }
+
+    if (node->children == NULL) {
+        printf("Correct children value\n");
+    } else {
+        printf("Incorrect children value\n");
+    }
+
+    printf("=== End Test Parse Int ===");
+}
+
 // Test add_child method
 void test_add_child() {
     tree_node *parent = malloc(sizeof(tree_node));;
@@ -71,5 +105,6 @@ void test_add_child() {
 int main() {
     test_parse_string();
     test_add_child();
+    test_parse_int();
     return 0;
 }
