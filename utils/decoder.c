@@ -28,6 +28,14 @@ int decode(char file_path[]) {
 
 /*
 * Decode tree implementation with passing in smaller version of previous string
+* 
+* Parameters
+*   text - input bencoded string
+*   root - tree node
+*   pointer - position in string
+*
+* Returns
+*   int - number of chars consumed
 */
 int decode_tree(const char *text, tree_node *root, int pointer) {
     if (pointer >= strlen(text)) {
