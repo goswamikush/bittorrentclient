@@ -56,6 +56,19 @@ int decode_tree(const char *text, tree_node *root, int pointer) {
         return atoi(text + pointer) + colon_pos + 1;
     }
 
+    if (text[pointer] == 'i') {
+        tree_node *curr_node = parse_int(text + pointer);
+        add_child(root, curr_node);
+
+        int chars_consumed = 0;
+
+        while (text[pointer + chars_consumed] != 'e') {
+            chars_consumed++;
+        }
+
+        return chars_consumed + 1;
+    }
+
     if (text[pointer] == 'e') {
         return 1;
     }
