@@ -18,5 +18,20 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
 
     printf("Announce URL: %s\n", announce_url);
 
+    // Find info dict
+    tree_node *info_dict = malloc(sizeof(tree_node));
+
+    for (int i = 0; i < parent_dict->child_count; i++) {
+        if (parent_dict->children[i]->type == STR && 
+            strcmp(parent_dict->children[i]->val.comp_str, "info") == 0) {
+            info_dict = parent_dict->children[i + 1];
+        }
+    }
+
+    // Get piece length from info dict
+    int piece_length = info_dict->child_count;
+
+    printf("Piece length: %d\n", piece_length);
+
     return res;
 }
