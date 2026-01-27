@@ -3,7 +3,6 @@
 #include <string.h>
 #include "tree.h"
 
-
 /*
 * See if two trees are equal
 * 

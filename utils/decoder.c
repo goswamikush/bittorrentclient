@@ -3,9 +3,13 @@
 #include <string.h>
 #include <math.h>
 #include "../types/tree.h"
+#include "../types/torrent_file.h"
 
 tree_node *parse_string_bytes(const unsigned char *component);
 tree_node *parse_int_bytes(const unsigned char *component);
+int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, int num_bytes);
+int decode(char file_path[]);
+void print_tree(const tree_node *node);
 
 int add_child(tree_node *parent, tree_node *child);
 
@@ -14,7 +18,7 @@ int decode(char file_path[]) {
     unsigned char *buffer;
     long file_size;
 
-    fptr = fopen("big-buck-bunny.torrent", "rb");
+    fptr = fopen(file_path, "rb");
 
     if (fptr == NULL) {
         perror("Error opening file");
@@ -40,10 +44,50 @@ int decode(char file_path[]) {
         return 1;
     }
 
+    // Test parsing into tree
+    tree_node *root_node = malloc(sizeof(tree_node));
+
+    decode_tree_bytes(buffer, root_node, 0, file_size);
+
+    print_tree(root_node);
+
+    write_torrent_file_struct(root_node);
+
     free(buffer);
     fclose(fptr);
 
     return EXIT_SUCCESS;
+}
+
+void print_tree(const tree_node *node) {
+    static int depth = 0;
+    
+    if (!node) return;
+    
+    for (int i = 0; i < depth; i++) {
+        printf("  ");
+    }
+    
+    switch (node->type) {
+        case LIST:
+            printf("LIST (%zu children)\n", node->child_count);
+            break;
+        case STR:
+            printf("STR \"%s\"\n", node->val.comp_str ? node->val.comp_str : "(null)");
+            break;
+        case INT:
+            printf("INT %d\n", node->val.comp_int);
+            break;
+        case DICT:
+            printf("DICT (%zu children)\n", node->child_count);
+            break;
+    }
+    
+    depth++;
+    for (size_t i = 0; i < node->child_count; i++) {
+        print_tree(node->children[i]);
+    }
+    depth--;
 }
 
 /*
@@ -209,4 +253,9 @@ int add_child(tree_node *parent, tree_node *child) {
     parent->child_count++;
 
     return 1;
+}
+
+int main() {
+    decode("/Users/kushgoswami/Documents/Projects/bit_torrent_client/big-buck-bunny.torrent");
+    return 0;
 }
