@@ -31,11 +31,20 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
     }
 
     // Parse piece length
-    int piece_length = info_dict->child_count;
+    int piece_length;
+    for (int i = 0; i < info_dict->child_count; i++) {
+        if (info_dict->children[i]->type == STR && 
+            strcmp(info_dict->children[i]->val.comp_str, "piece length") == 0) {
+                piece_length = info_dict->children[i + 1]->val.comp_int;
+        }
+    }
 
     res->piece_length = piece_length;
 
     printf("Piece length: %d\n", piece_length);
+
+    // Parse piece
+
 
     return res;
 }
