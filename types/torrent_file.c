@@ -16,6 +16,8 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
         }
     }
 
+    res->announce = announce_url;
+
     printf("Announce URL: %s\n", announce_url);
 
     // Find info dict
@@ -28,8 +30,10 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
         }
     }
 
-    // Get piece length from info dict
+    // Parse piece length
     int piece_length = info_dict->child_count;
+
+    res->piece_length = piece_length;
 
     printf("Piece length: %d\n", piece_length);
 
