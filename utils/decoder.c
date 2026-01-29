@@ -201,6 +201,7 @@ tree_node *parse_string_bytes(const unsigned char *bytes) {
 
     node->type = STR;
     node->val.comp_str = str_value;
+    node->val_size = str_len;
     node->child_count = 0;
     node->children = NULL;
     

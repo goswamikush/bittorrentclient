@@ -19,6 +19,7 @@ typedef union {
 typedef struct tree_node {
     node_type type;
     node_value val;
+    size_t val_size;
     size_t child_count;
     struct tree_node **children;
 } tree_node;
