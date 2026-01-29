@@ -53,7 +53,10 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
                 pieces = (unsigned char*)info_dict->children[i + 1]->val.comp_str;
                 pieces_length = info_dict->children[i+1]->val_size;
         }
-    } 
+    }
+
+    res->pieces = pieces;
+    res->pieces_length = pieces_length;
 
     printf("Pieces length %d\n", pieces_length);
 
