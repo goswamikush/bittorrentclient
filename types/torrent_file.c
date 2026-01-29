@@ -44,7 +44,14 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
     printf("Piece length: %d\n", piece_length);
 
     // Parse piece
+    unsigned char *pieces;
 
+    for (int i = 0; i < info_dict->child_count; i++) {
+        if (info_dict->children[i]->type == STR && 
+            strcmp(info_dict->children[i]->val.comp_str, "pieces") == 0) {
+                pieces = (unsigned char*)info_dict->children[i + 1]->val.comp_str;
+        }
+    } 
 
     return res;
 }
