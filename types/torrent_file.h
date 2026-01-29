@@ -8,6 +8,7 @@ typedef struct {
     char *info_hash;
     int piece_length;
     unsigned char *pieces;
+    int pieces_length;
     char *file_name;
     int total_size;
 } torrent_file;
