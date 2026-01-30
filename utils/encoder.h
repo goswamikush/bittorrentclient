@@ -3,6 +3,6 @@
 
 #include "../types/tree.h"
 
-unsigned char *bencode(tree_node *node, size_t *out_length);
+unsigned char *bencode(tree_node *node);
 
 #endif

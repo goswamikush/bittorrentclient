@@ -7,17 +7,50 @@ unsigned char *bencode_string(tree_node *node);
 unsigned char *bencode_int(tree_node *node);
 
 unsigned char *bencode(tree_node *node) {
-    unsigned char *res;
+    if (node->type == LIST || node->type == DICT) {
+        // Process everything within the list which should return a string
+        tree_node **children = node->children;
+        int child_count = node->child_count;
+
+        unsigned char *curr_string = malloc(1);
+
+        if (node->type == LIST) {
+            curr_string[0] = 'l';
+        } else {
+            curr_string[0] = 'd';
+        }
+
+        size_t total_string_length = 1;
+
+        for (int i = 0; i < child_count; i++) {
+            // Get bencoded of children
+            unsigned char *child = bencode(children[i]);
+            size_t curr_len = strlen((char*)child);
+            total_string_length += curr_len;
+
+            // Allocate memory to store each child
+            curr_string = realloc(curr_string, total_string_length);
+
+            memcpy(curr_string + total_string_length - curr_len, child, curr_len);
+        }
+
+        curr_string = realloc(curr_string, total_string_length + 2);
+
+        curr_string[total_string_length] = 'e';
+        curr_string[total_string_length + 1] = '\0';
+
+        return curr_string;
+    }
 
     if (node->type == STR) {
-        bencode_string(node);
+        return bencode_string(node);
     }
 
     if (node->type == INT) {
-        bencode_int(node);
+        return bencode_int(node);
     }
 
-    return res;
+    return NULL;
 }
 
 unsigned char *bencode_string(tree_node *node) {
@@ -113,25 +146,4 @@ unsigned char *bencode_int(tree_node *node) {
     printf("Bencoded int %s\n", bencoded_int);
 
     return bencoded_int;
-}
-
-int main() {
-    // tree_node *test_node = malloc(sizeof(tree_node));
-
-    // char test_val[6] = "hello";
-
-    // test_node->type = STR;
-    // test_node->val.comp_str = test_val;
-    // test_node->val_size = 5;
-
-    // printf("Final bencoded string: %s\n", bencode_string(test_node));
-
-    tree_node *test_node = malloc(sizeof(tree_node));
-
-    test_node->type = INT;
-    test_node->val.comp_int = 687;
-
-    printf("Final bencoded int: %s\n", bencode_int(test_node));
-    
-    return 0;
 }
