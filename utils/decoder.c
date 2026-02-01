@@ -8,12 +8,12 @@
 tree_node *parse_string_bytes(const unsigned char *component);
 tree_node *parse_int_bytes(const unsigned char *component);
 int decode_tree_bytes(const unsigned char *bytes, tree_node *root, int pointer, int num_bytes);
-int decode(char file_path[]);
+torrent_file *decode(char file_path[]);
 void print_tree(const tree_node *node);
 
 int add_child(tree_node *parent, tree_node *child);
 
-int decode(char file_path[]) {
+torrent_file *decode(char file_path[]) {
     FILE *fptr;
     unsigned char *buffer;
     long file_size;
@@ -22,7 +22,7 @@ int decode(char file_path[]) {
 
     if (fptr == NULL) {
         perror("Error opening file");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     fseek(fptr, 0, SEEK_END);
@@ -33,7 +33,7 @@ int decode(char file_path[]) {
     if (buffer == NULL) {
         perror("Memory allocation failed");
         fclose(fptr);
-        return 1;
+        return NULL;
     }
 
     size_t bytes_read = fread(buffer, 1, file_size, fptr);
@@ -41,7 +41,7 @@ int decode(char file_path[]) {
         perror("Error reading file");
         free(buffer);
         fclose(fptr);
-        return 1;
+        return NULL;
     }
 
     // Test parsing into tree
@@ -51,12 +51,12 @@ int decode(char file_path[]) {
 
     print_tree(root_node);
 
-    write_torrent_file_struct(root_node);
+    torrent_file *res_torrent_file = write_torrent_file_struct(root_node);
 
     free(buffer);
     fclose(fptr);
 
-    return EXIT_SUCCESS;
+    return res_torrent_file;
 }
 
 void print_tree(const tree_node *node) {
@@ -256,7 +256,7 @@ int add_child(tree_node *parent, tree_node *child) {
     return 1;
 }
 
-int main() {
-    decode("/Users/kushgoswami/Documents/Projects/bit_torrent_client/big-buck-bunny.torrent");
-    return 0;
-}
+// int main() {
+//     decode("/Users/kushgoswami/Documents/Projects/bit_torrent_client/big-buck-bunny.torrent");
+//     return 0;
+// }

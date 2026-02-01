@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "torrent_file.h"
+#include "../utils/info_hash.h"
 
 torrent_file *write_torrent_file_struct(tree_node *root_node) {
     torrent_file *res = malloc(sizeof(torrent_file));
@@ -26,9 +27,12 @@ torrent_file *write_torrent_file_struct(tree_node *root_node) {
     for (int i = 0; i < parent_dict->child_count; i++) {
         if (parent_dict->children[i]->type == STR && 
             strcmp(parent_dict->children[i]->val.comp_str, "info") == 0) {
+            printf("Found info dict!\n");
             info_dict = parent_dict->children[i + 1];
         }
     }
+
+    res->info_hash = compute_info_hash(info_dict);
 
     // Parse piece length
     int piece_length;

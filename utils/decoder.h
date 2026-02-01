@@ -2,8 +2,9 @@
 #define DECODER_H
 
 #include "../types/tree.h"
+#include "../types/torrent_file.h"
 
-void decode(char file_path[]);
+torrent_file *decode(char file_path[]);
 
 tree_node *parse_string_bytes(const unsigned char *bytes);
 tree_node *parse_int_bytes(const unsigned char *bytes);

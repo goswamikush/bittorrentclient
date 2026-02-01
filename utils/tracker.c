@@ -5,10 +5,8 @@
 
 char *generate_tracker_url(tracker_url_params *params) {
     char *url = malloc(1024);
-
-    sprintf(url, "http://%s:%zu/announce?info_hash=%s&peer_id=%s&port=%zu&uploaded=%zu&downloaded=%zu&left=%zu&compact=%zu",
-        params->tracker, params->port, params->info_hash_encoded, params->peer_id, params->port, params->bytes_uploaded, params->bytes_downloaded, params->bytes_left, params->compact);
-
+    sprintf(url, "%s?info_hash=%s&peer_id=%s&port=%zu&uploaded=%zu&downloaded=%zu&left=%zu&compact=%zu",
+        params->tracker, params->info_hash_encoded, params->peer_id, params->port, params->bytes_uploaded, params->bytes_downloaded, params->bytes_left, params->compact);
     return url;
 }
 
@@ -79,39 +77,39 @@ int url_encode_test() {
     return 0;
 }
 
-int main() {
-    printf("=== Tracker URL Generation Test ===\n\n");
+// int main() {
+//     printf("=== Tracker URL Generation Test ===\n\n");
     
-    // Create test parameters
-    tracker_url_params params;
-    params.tracker = "tracker.example.com";
-    params.port = 6969;
-    params.info_hash_encoded = (unsigned char*)"%7e%25%c6%1d%d1%97%3c%28%40%a4%db%3b%88%12%0d%2a%1b%7c%12%3c";
-    params.peer_id = (unsigned char*)"-PC0001-123456789012";
-    params.bytes_uploaded = 0;
-    params.bytes_downloaded = 0;
-    params.bytes_left = 276445467;
-    params.compact = 1;
+//     // Create test parameters
+//     tracker_url_params params;
+//     params.tracker = "tracker.example.com";
+//     params.port = 6969;
+//     params.info_hash_encoded = (unsigned char*)"%7e%25%c6%1d%d1%97%3c%28%40%a4%db%3b%88%12%0d%2a%1b%7c%12%3c";
+//     params.peer_id = (unsigned char*)"-PC0001-123456789012";
+//     params.bytes_uploaded = 0;
+//     params.bytes_downloaded = 0;
+//     params.bytes_left = 276445467;
+//     params.compact = 1;
     
-    // Generate URL
-    char *url = generate_tracker_url(&params);
+//     // Generate URL
+//     char *url = generate_tracker_url(&params);
     
-    // Expected URL
-    const char *expected = "http://tracker.example.com:6969/announce?info_hash=%7e%25%c6%1d%d1%97%3c%28%40%a4%db%3b%88%12%0d%2a%1b%7c%12%3c&peer_id=-PC0001-123456789012&port=6969&uploaded=0&downloaded=0&left=276445467&compact=1";
+//     // Expected URL
+//     const char *expected = "http://tracker.example.com:6969/announce?info_hash=%7e%25%c6%1d%d1%97%3c%28%40%a4%db%3b%88%12%0d%2a%1b%7c%12%3c&peer_id=-PC0001-123456789012&port=6969&uploaded=0&downloaded=0&left=276445467&compact=1";
     
-    // Print results
-    printf("Generated URL:\n%s\n\n", url);
-    printf("Expected URL:\n%s\n\n", expected);
+//     // Print results
+//     printf("Generated URL:\n%s\n\n", url);
+//     printf("Expected URL:\n%s\n\n", expected);
     
-    // Verify
-    if (strcmp(url, expected) == 0) {
-        printf("✓ TEST PASSED: URLs match!\n");
-    } else {
-        printf("✗ TEST FAILED: URLs don't match!\n");
-    }
+//     // Verify
+//     if (strcmp(url, expected) == 0) {
+//         printf("✓ TEST PASSED: URLs match!\n");
+//     } else {
+//         printf("✗ TEST FAILED: URLs don't match!\n");
+//     }
     
-    free(url);
+//     free(url);
 
-    url_encode_test();
-    return 0;
-}
+//     url_encode_test();
+//     return 0;
+// }

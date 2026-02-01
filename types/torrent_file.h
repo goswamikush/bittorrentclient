@@ -5,7 +5,7 @@
 
 typedef struct {
     char *announce;
-    char *info_hash;
+    unsigned char *info_hash;
     int piece_length;
     unsigned char *pieces;
     int pieces_length;
